@@ -1,11 +1,11 @@
-; Script Düzenleme Tarihi: 31.12.2025
-; Hedef: Aegisub Türkçe Sözlük Eklentisi (GitHub Uyumlu)
+; Script Düzenleme Tarihi: 10.01.2026
+; Hedef: Aegisub Türkçe Sözlük Eklentisi (Düzeltilmiş)
 
 #define MyAppName "Aegisub Türkçe Sözlük Eklentisi"
 #define MyAppVersion "1.0"
 #define MyAppPublisher "Kerim Demirkaynak"
-; {src} demek, bu .iss dosyasının olduğu klasör demektir.
-#define MySourcePath "{src}" 
+; DÜZELTME: Burası "." (nokta) olmalı.
+#define MySourcePath "."
 
 [Setup]
 OutputBaseFilename=Aegisub-3.4.2-dict-tr_TR
@@ -23,7 +23,7 @@ Compression=lzma2/ultra64
 SolidCompression=yes
 PrivilegesRequired=admin
 
-; --- Görseller (resources klasöründen çeker) ---
+; --- Görseller ---
 WizardImageFile={#MySourcePath}\resources\welcome-large.bmp
 WizardSmallImageFile={#MySourcePath}\resources\aegisub.bmp
 SetupIconFile={#MySourcePath}\resources\aegisub.ico
@@ -32,7 +32,7 @@ SetupIconFile={#MySourcePath}\resources\aegisub.ico
 Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 
 [Files]
-; --- Dosyalar (dictionaries klasöründen çeker) ---
+; --- Dosyalar ---
 Source: "{#MySourcePath}\dictionaries\tr_TR.aff"; DestDir: "{app}\dictionaries"; Flags: ignoreversion
 Source: "{#MySourcePath}\dictionaries\tr_TR.dic"; DestDir: "{app}\dictionaries"; Flags: ignoreversion
 
