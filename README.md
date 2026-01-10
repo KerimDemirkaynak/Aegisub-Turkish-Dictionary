@@ -41,5 +41,4 @@ This project is licensed under the **GNU General Public License v3.0**.
 
 **Credits:**
 * **Installer Script:** Copyright © 2025 Kerim Demirkaynak.
-* **Dictionary Files (`tr_TR.aff`, `tr_TR.dic`):** Sourced from LibreOffice/Hunspell projects. These files are subject to their original licenses (LG
-* PL/MPL/GPL).
+* **Dictionary Files (`tr_TR.aff`, `tr_TR.dic`):** Sourced from LibreOffice/Hunspell projects. These files are subject to their original licenses (LGPL/MPL/GPL)
