@@ -1,41 +1,28 @@
-; Script Düzenleme Tarihi: 10.01.2026
-; Hedef: Aegisub Türkçe Sözlük Eklentisi (GitHub Hatası Giderildi)
+name: Build Installer
 
-#define MyAppName "Aegisub Türkçe Sözlük Eklentisi"
-#define MyAppVersion "1.0"
-#define MyAppPublisher "Kerim Demirkaynak"
-; DÜZELTME: "{src}" yerine "." (nokta) kullandık. Nokta "bu klasör" demektir.
-#define MySourcePath "."
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
 
-[Setup]
-OutputBaseFilename=Aegisub-3.4.2-dict-tr_TR
-OutputDir={#MySourcePath}\Output
-AppId={{A4F79320-9D73-45B6-8964-F8E398918235}
-AppName={#MyAppName}
-AppVersion={#MyAppVersion}
-AppPublisher={#MyAppPublisher}
-ArchitecturesInstallIn64BitMode=x64
-DefaultDirName={autopf}\Aegisub
-DirExistsWarning=no
-DisableDirPage=yes
-WizardStyle=modern
-Compression=lzma2/ultra64
-SolidCompression=yes
-PrivilegesRequired=admin
+jobs:
+  build:
+    name: Build Inno Setup Installer
+    runs-on: windows-latest
 
-; --- Görseller ---
-WizardImageFile={#MySourcePath}\resources\welcome-large.bmp
-WizardSmallImageFile={#MySourcePath}\resources\aegisub.bmp
-SetupIconFile={#MySourcePath}\resources\aegisub.ico
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-[Languages]
-Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
+      - name: Install Inno Setup
+        run: choco install innosetup
 
-[Files]
-; --- Dosyalar ---
-Source: "{#MySourcePath}\dictionaries\tr_TR.aff"; DestDir: "{app}\dictionaries"; Flags: ignoreversion
-Source: "{#MySourcePath}\dictionaries\tr_TR.dic"; DestDir: "{app}\dictionaries"; Flags: ignoreversion
+      - name: Compile Installer
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
 
-[Run]
-Filename: "{app}\aegisub32.exe"; Description: "Aegisub uygulamasını başlat"; Flags: nowait postinstall skipifsilent shellexec runasoriginaluser; Check: FileExists(ExpandConstant('{app}\aegisub32.exe'))
-Filename: "{app}\aegisub64.exe"; Description: "Aegisub uygulamasını başlat"; Flags: nowait postinstall skipifsilent shellexec runasoriginaluser; Check: FileExists(ExpandConstant('{app}\aegisub64.exe'))
+      - name: Upload Installer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aegisub-Turkish-Dictionary-Installer
+          path: Output/Aegisub-3.4.2-dict-tr_TR.exe
