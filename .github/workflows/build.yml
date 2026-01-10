@@ -23,25 +23,32 @@ jobs:
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
 
       # 2. Mac/Linux Scriptini Hazırla
+      # (install_mac_linux.command dosyasının repoda olduğundan emin olun)
       - name: Prepare Script
         run: |
-          Copy-Item install_mac_linux.command -Destination dictionaries/
+          if (Test-Path install_mac_linux.command) {
+              Copy-Item install_mac_linux.command -Destination dictionaries/
+          } else {
+              Write-Host "Uyarı: install_mac_linux.command bulunamadı, sadece sözlükler ziplenecek."
+          }
 
-      # 3. ZIP Paketle (Sözlükler + Script)
+      # 3. ZIP Paketle (Sözlükler + Varsa Script)
       - name: Create Portable ZIP
         run: |
           Compress-Archive -Path dictionaries/* -DestinationPath Output/Aegisub-Turkish-Dictionary-Portable.zip
 
-      # 4. Windows Yükleyicisini (EXE) Ayrı Yükle
+      # 4. Windows Yükleyicisini (EXE) AYRI BİR İSİMLE YÜKLE
+      # İndirirken "WINDOWS-KURULUM.zip" olarak inecek, içinden exe çıkacak.
       - name: Upload Windows Installer
         uses: actions/upload-artifact@v4
         with:
-          name: Aegisub-Turkish-Dictionary-Installer
+          name: 1-WINDOWS-KURULUM-EXE
           path: Output/*.exe
 
-      # 5. Taşınabilir Paketi (ZIP) Ayrı Yükle
+      # 5. Taşınabilir Paketi (ZIP) AYRI BİR İSİMLE YÜKLE
+      # İndirirken "MAC-LINUX-PORTABLE.zip" olarak inecek.
       - name: Upload Portable Package
         uses: actions/upload-artifact@v4
         with:
-          name: Aegisub-Turkish-Dictionary-Portable
+          name: 2-MAC-LINUX-PORTABLE
           path: Output/*.zip
