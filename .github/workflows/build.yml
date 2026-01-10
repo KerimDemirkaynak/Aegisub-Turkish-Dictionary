@@ -23,20 +23,25 @@ jobs:
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
 
       # 2. Mac/Linux Scriptini Hazırla
-      # 'install_mac_linux.command' dosyasını sözlüklerin yanına kopyalıyoruz.
       - name: Prepare Script
         run: |
           Copy-Item install_mac_linux.command -Destination dictionaries/
 
       # 3. ZIP Paketle (Sözlükler + Script)
-      # Mac/Linux kullanıcıları için her şeyi tek bir ZIP haline getiriyoruz.
       - name: Create Portable ZIP
         run: |
           Compress-Archive -Path dictionaries/* -DestinationPath Output/Aegisub-Turkish-Dictionary-Portable.zip
 
-      # 4. Dosyaları (EXE ve ZIP) GitHub'a Yükle
-      - name: Upload Artifacts
+      # 4. Windows Yükleyicisini (EXE) Ayrı Yükle
+      - name: Upload Windows Installer
         uses: actions/upload-artifact@v4
         with:
-          name: Aegisub-Turkish-Dictionary-Packages
-          path: Output/*
+          name: Aegisub-Turkish-Dictionary-Installer
+          path: Output/*.exe
+
+      # 5. Taşınabilir Paketi (ZIP) Ayrı Yükle
+      - name: Upload Portable Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aegisub-Turkish-Dictionary-Portable
+          path: Output/*.zip
