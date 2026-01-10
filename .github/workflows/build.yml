@@ -1,4 +1,4 @@
-name: Build Installer
+name: Build Installer & Zip
 
 on:
   push:
@@ -7,22 +7,36 @@ on:
 
 jobs:
   build:
-    name: Build Inno Setup Installer
+    name: Build Packages
     runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # 1. Windows için EXE Hazırla
       - name: Install Inno Setup
         run: choco install innosetup
 
-      - name: Compile Installer
+      - name: Compile Windows Installer
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
 
-      - name: Upload Installer Artifact
+      # 2. Mac/Linux Scriptini Hazırla
+      # 'install_mac_linux.command' dosyasını sözlüklerin yanına kopyalıyoruz.
+      - name: Prepare Script
+        run: |
+          Copy-Item install_mac_linux.command -Destination dictionaries/
+
+      # 3. ZIP Paketle (Sözlükler + Script)
+      # Mac/Linux kullanıcıları için her şeyi tek bir ZIP haline getiriyoruz.
+      - name: Create Portable ZIP
+        run: |
+          Compress-Archive -Path dictionaries/* -DestinationPath Output/Aegisub-Turkish-Dictionary-Portable.zip
+
+      # 4. Dosyaları (EXE ve ZIP) GitHub'a Yükle
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Aegisub-Turkish-Dictionary-Installer
-          path: Output/Aegisub-3.4.2-dict-tr_TR.exe
+          name: Aegisub-Turkish-Dictionary-Packages
+          path: Output/*
