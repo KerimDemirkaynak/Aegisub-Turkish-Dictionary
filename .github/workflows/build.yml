@@ -6,15 +6,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build Packages
+  # 1. Windows İşi (EXE Üretir)
+  build-windows:
+    name: Windows Installer
     runs-on: windows-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      # 1. Windows için EXE Hazırla
+      - uses: actions/checkout@v4
+      
       - name: Install Inno Setup
         run: choco install innosetup
 
@@ -22,29 +20,39 @@ jobs:
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
 
-      # 2. Mac/Linux Scriptini Hazırla
-      # Script dosyasını sözlüklerin yanına kopyalıyoruz.
-      - name: Prepare Script
-        run: |
-          if (Test-Path install_mac_linux.command) {
-              Copy-Item install_mac_linux.command -Destination dictionaries/
-          }
-
-      # --- BURADAKİ MANUEL ZIPLEME ADIMINI KALDIRDIK ---
-      # Artık GitHub'ın kendi ziplemesini kullanacağız.
-
-      # 3. Windows Yükleyicisini (EXE) Yükle
-      # İndirince: 1-WINDOWS-KURULUM.zip -> İçinde direkt setup.exe çıkar.
       - name: Upload Windows Installer
         uses: actions/upload-artifact@v4
         with:
           name: 1-WINDOWS-KURULUM
           path: Output/*.exe
 
-      # 4. Taşınabilir Paketi (Mac/Linux) Yükle
-      # İndirince: 2-MAC-LINUX-PORTABLE.zip -> İçinde direkt aff, dic ve script dosyaları çıkar.
+  # 2. Linux İşi (Mac/Linux Paketi Üretir)
+  build-linux:
+    name: Linux/Mac Portable
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare Files
+        run: |
+          # Klasör oluştur
+          mkdir Portable_Package
+          
+          # Sözlük dosyalarını kopyala
+          cp dictionaries/tr_TR.aff Portable_Package/
+          cp dictionaries/tr_TR.dic Portable_Package/
+          
+          # --- ÇİFT İSİMLENDİRME ADIMI ---
+          # Aynı scripti hem Mac hem Linux ismiyle kopyalıyoruz
+          cp install_mac_linux.command Portable_Package/install_mac.command
+          cp install_mac_linux.command Portable_Package/install_linux.sh
+          
+          # İkisine de çalıştırma izni ver (+x)
+          chmod +x Portable_Package/install_mac.command
+          chmod +x Portable_Package/install_linux.sh
+
       - name: Upload Portable Package
         uses: actions/upload-artifact@v4
         with:
           name: 2-MAC-LINUX-PORTABLE
-          path: dictionaries/*
+          path: Portable_Package/*
