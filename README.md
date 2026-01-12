@@ -46,8 +46,12 @@ If you want to build the installer yourself:
 ## 📜 License & Credits
 
 **Project License:**
-This project is licensed under the **GNU General Public License v3.0**.
+This installer project is licensed under the **GNU General Public License v3.0**.
 
 **Credits:**
 * **Installer Script:** Copyright © 2025 Kerim Demirkaynak.
-* **Dictionary Files (`tr_TR.aff`, `tr_TR.dic`):** Sourced from the [tr-spell project](https://code.google.com/archive/p/tr-spell/downloads) (Google Code Archive). These files are subject to their original licenses (LGPL/MPL/GPL).
+* **Dictionary Files (`tr_TR.aff`, `tr_TR.dic`):**
+    * **Source:** **tr-spell** project by **Ahmet A. Akın**.
+    * **Repositories:** Archived at [Google Code Archive](https://code.google.com/archive/p/tr-spell/) and mirrored on [GitHub](https://github.com/ahmetaa/tr-spell).
+    * **License:** Apache License 2.0.
+    * **Note:** These files are based on Hunspell-compatible dictionaries originally developed for the Zemberek NLP project.
